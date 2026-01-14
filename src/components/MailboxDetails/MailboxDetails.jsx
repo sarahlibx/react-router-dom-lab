@@ -1,12 +1,14 @@
 // src/components/MailboxDetails/MailboxDetails.jsx
 import { useParams } from 'react-router';
 
-const MailboxDetails = (props) => {
+const MailboxDetails = ({ mailboxes, letters }) => {
     const { mailboxId } = useParams();
     
-    const selectedBox = props.mailboxes.find(
-        (mailbox) => mailbox._id === Number(mailboxId));
+    const selectedBox = mailboxes.find(
+        (mailbox) => Number(mailbox._id) === Number(mailboxId));
     console.log('mailbox object:', selectedBox);
+
+    const selectedLetters = letters.filter((letter) => Number(letter.mailboxId) === Number(mailboxId));
     
     if (!selectedBox) {
         return (
@@ -25,8 +27,20 @@ const MailboxDetails = (props) => {
             <dt>Owner:</dt>
             <dd>{selectedBox.boxOwner}</dd>
         </dl>
+
+        <h3>Letters</h3>
+        {selectedLetters.length === 0 ? (<p>No letters yet!</p>) : (
+            <ul>
+                {selectedLetters.map((letter, index) => (
+                    <li key={index}>
+                        <p>To: {letter.recipient}</p>
+                        <p>Message: {letter.message}</p>
+                    </li>
+                ))}
+            </ul>
+        )}
         </>
-    )
+    );
 };
 
 export default MailboxDetails;
